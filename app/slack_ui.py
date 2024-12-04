@@ -26,7 +26,8 @@ def build_summarize_option_modal(*, context: BoltContext, body: dict) -> dict:
         context=context,
         text=(
             "All replies posted in a Slack thread will be provided below. "
-            "Could you summarize the discussion in 200 characters or less?"
+            "Could you summarize the discussion in 400 characters or less "
+            "in English?"
         ),
     )
     thread_ts = body.get("message").get("thread_ts", body.get("message").get("ts"))
