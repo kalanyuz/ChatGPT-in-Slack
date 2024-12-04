@@ -1,19 +1,21 @@
-FROM python:3.11.4-slim-buster as builder
-COPY requirements.txt /build/
-WORKDIR /build/
-RUN pip install -U pip && pip install -r requirements.txt
-
 FROM python:3.11.4-slim-buster as app
-WORKDIR /app/
-COPY *.py /app/
-RUN mkdir /app/app/
-COPY app/*.py /app/app/
-COPY --from=builder /usr/local/bin/ /usr/local/bin/
-COPY --from=builder /usr/local/lib/ /usr/local/lib/
-ENTRYPOINT python main.py
 
-# docker build . -t your-repo/chat-gpt-in-slack
-# export SLACK_APP_TOKEN=xapp-...
-# export SLACK_BOT_TOKEN=xoxb-...
-# export OPENAI_API_KEY=sk-...
-# docker run -e SLACK_APP_TOKEN=$SLACK_APP_TOKEN -e SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN -e OPENAI_API_KEY=$OPENAI_API_KEY -it your-repo/chat-gpt-in-slack
+WORKDIR /slack-gpt
+
+ENV HOST 0.0.0.0
+
+COPY pyproject.toml .
+COPY poetry.lock .
+COPY *.py /slack-gpt/
+# RUN mkdir .
+COPY app/ /slack-gpt/app/
+RUN pip install --no-cache-dir poetry
+# Create virtualenv at .venv in the project instead of ~/.cache/
+RUN poetry config virtualenvs.in-project true
+RUN poetry install
+
+EXPOSE 8080
+
+# USER servicerunner
+# Use Gunicorn to run the application
+ENTRYPOINT poetry run gunicorn --bind 0.0.0.0:8080 --workers 1 --threads 2 --timeout 0 main_prod:flask_app
