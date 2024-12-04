@@ -1077,23 +1077,23 @@ def register_listeners(app: App):
         lazy=[send_proofreading_result_in_dm],
     )
 
-    # Image generation
-    app.action("templates-image-generation")(
-        ack=just_ack,
-        lazy=[start_image_generation],
-    )
-    app.view("image-generation")(
-        ack=ack_image_generation_modal_submission,
-        lazy=[display_image_generation_result],
-    )
-    app.action("templates-image-variations")(
-        ack=just_ack,
-        lazy=[start_image_variations],
-    )
-    app.view("image-variations")(
-        ack=ack_image_variations_modal_submission,
-        lazy=[display_image_variations_result],
-    )
+    # # Image generation
+    # app.action("templates-image-generation")(
+    #     ack=just_ack,
+    #     lazy=[start_image_generation],
+    # )
+    # app.view("image-generation")(
+    #     ack=ack_image_generation_modal_submission,
+    #     lazy=[display_image_generation_result],
+    # )
+    # app.action("templates-image-variations")(
+    #     ack=just_ack,
+    #     lazy=[start_image_variations],
+    # )
+    # app.view("image-variations")(
+    #     ack=ack_image_variations_modal_submission,
+    #     lazy=[display_image_variations_result],
+    # )
 
     # Free format chat
     app.action("templates-from-scratch")(
